@@ -1,0 +1,159 @@
+html {
+  font-size: $base-size;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  width: 100%;
+  min-width: 1100px;
+}
+
+body,
+#app {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  width: 100%;
+
+  >section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.c-flex {
+  display: flex;
+}
+
+.c-flex-c {
+  @extend .c-flex;
+  flex-direction: column
+}
+
+@for $i from 0 through 4 {
+  .flex-#{$i} {
+    flex: $i;
+  }
+}
+
+.flex-center {
+  @extend .c-flex;
+  justify-content: center
+}
+
+.dividing-line {
+  height: 1px;
+  box-shadow: 0px 2px 1px #ccc;
+  margin: 10px 0;
+}
+
+@for $i from 0 through 4 {
+  @for $j from 0 through 4 {
+    .margin-#{$i*5}-#{$j*5} {
+      margin: $i *5px $j * 5px;
+    }
+  }
+}
+
+@each $direction in left,
+right,
+top,
+bottom {
+  @for $num from 0 through 4 {
+    .m-#{$direction}-#{$num*5} {
+      margin-#{$direction}: $num*5px
+    }
+  }
+}
+
+@for $i from 1 through 4 {
+  .ellipsis-#{$i} {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $i;
+  }
+}
+
+.footer-menu {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: #f2f6fc;
+  opacity: 0.8;
+  bottom: 5px;
+  z-index: 10;
+  padding: 10px 0 5px 0;
+}
+
+.can-click {
+  cursor: pointer;
+  color: $main-color
+}
+
+.can-pointer {
+  cursor: pointer;
+}
+
+
+::-webkit-scrollbar-track-piece {
+  //滚动条凹槽的颜色，还可以设置边框属性
+  background-color: #f8f8f8;
+}
+
+::-webkit-scrollbar {
+  //滚动条的宽度
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  //滚动条的设置
+  background-color: #aaa;
+  background-clip: padding-box;
+  min-height: 28px;
+  -webkit-border-radius: 3em;
+  -moz-border-radius: 3em;
+  border-radius: 3em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+
+}
+
+.ac-type {
+  border: 1px solid;
+  border-radius: 50%;
+  padding: 1px 2px;
+  font-size: 12px;
+}
+
+.ac-excellent {
+  color: #21d448;
+}
+
+.ac-good {
+  color: #e6a23c;
+}
+
+.ac-bad {
+  color: #f56c6c;
+}
+
+.ac-fail {
+  color: red
+}
