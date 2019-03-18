@@ -16,7 +16,9 @@
         </el-header>
         <el-main>
           <div>
-            <section>233</section>
+
+            <router-view></router-view>
+
           </div>
         </el-main>
       </el-container>
@@ -71,8 +73,10 @@ export default {
     min-height: 100%;
     background-color: white;
     border-radius: 5px;
+    display: flex;
     > section {
       padding: 10px;
+      flex: 1;
     }
   }
 }
