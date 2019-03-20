@@ -54,3 +54,7 @@ input:-webkit-autofill:focus {
   height: 40px;
   line-height: 40px;
 }
+
+.el-submenu .el-menu-item {
+  min-width: auto !important;
+}

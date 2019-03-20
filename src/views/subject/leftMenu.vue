@@ -5,21 +5,17 @@
       <div>后台管理</div>
       <div class="f-title">CRM</div>
     </div>
-    <el-menu :default-active="defaultActive" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
-      <div :index="route.path" v-for="route in routes" :key="route.path" :is="getType(route.children)">
+    <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
+      <div :index="`${route.path}/${route.children[0].path}`" v-for="route in routes" :key="route.path" :is="getType(route.children)">
         <div v-if="getType(route.children)=='el-menu-item'">
-          <i class="el-icon-setting"></i>
+          <i :class="`iconfont ${route.meta.icon}`"></i>
           <span slot="title">{{route.meta.title}}</span>
         </div>
-        <div v-else>
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">{{route.meta.title}}</span>
-            </template>
-            <el-menu-item index="1-4-1" v-for="routeChild in route.children" :key="routeChild.path">{{routeChild.meta.title}}</el-menu-item>
-          </el-submenu>
-        </div>
+        <template slot="title" v-else>
+          <i class="el-icon-location"></i>
+          <span slot="title">{{route.meta.title}}</span>
+        </template>
+        <el-menu-item :index="`${route.path}/${routeChild.path}`" v-for="(routeChild,i) in route.children" v-if="i>1||(route.children.length!=1)" :key="routeChild.path">{{routeChild.meta.title}}</el-menu-item>
       </div>
     </el-menu>
   </section>

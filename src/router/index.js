@@ -2,10 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import V404 from '@/views/404.vue'
 import login from '@/views/login.vue'
-
-import menu from './menu'
-import role from './role'
-import agent from './agent'
+import agencyManagement from './agencyManagement'
+import jurisdiction from './jurisdiction'
 
 // import store from '@/store'
 // import {
@@ -16,12 +14,11 @@ Vue.use(Router)
 
 const router = new Router({
     routes: [
-        { path: '/', redirect: { path: '/menu/menuConfig' }, hidden: true },
+        { path: '/', redirect: { path: '/jurisdiction/jurisdictionMenu' }, hidden: true },
         { path: '/404', component: V404, hidden: true, },
         { path: '/login', component: login, name: "login", hidden: true },
-        menu, //菜单
-        role, //角色
-        agent, //代理商
+        jurisdiction, //权限配置
+        agencyManagement, //代理商管理  
         { path: '**', redirect: { path: '/404' }, hidden: true },
     ]
 })
