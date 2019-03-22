@@ -1,7 +1,7 @@
 
 <template>
   <section>
-    <div class="login">
+    <div class="login" @keyup.enter="login">
       <div class="top-login">
         <div class="title">
           后台管理
@@ -13,14 +13,14 @@
       <div class="bottom-login">
         <div class="margin-15-10">
           <i class="el-icon-edit m-right-10"></i>
-          <el-input placeholder="请输入账号"></el-input>
+          <el-input placeholder="请输入账号" v-model="TelPhone"></el-input>
         </div>
         <div class="margin-15-10">
           <i class="el-icon-edit m-right-10"></i>
-          <el-input placeholder="请输入密码"></el-input>
+          <el-input placeholder="请输入密码" v-model="PassWord" type="password"></el-input>
         </div>
         <div class="btn-login">
-          <el-button type="primary">后台登陆</el-button>
+          <el-button type="primary" @click="login" :loading="loginLoading">后台登陆</el-button>
         </div>
       </div>
     </div>
@@ -40,13 +40,39 @@ export default {
   props: {},
 
   data() {
-    return {}
+    return {
+      loginLoading: false,
+      PassWord: '',
+      TelPhone: ''
+    }
   },
   created() {},
 
   mounted() {},
 
-  methods: {}
+  methods: {
+    login() {
+      if (this.PassWord && this.TelPhone) {
+        this.loginLoading = true
+        this.$request.Site.Login({
+          TelPhone: this.TelPhone,
+          PassWord: this.PassWord
+        }).then(
+          res => {
+            this.$store.dispatch('setToken', res.Data.AuthorizationToken).then(() => {
+              this.$router.push('/')
+            })
+            this.loginLoading = false
+          },
+          () => {
+            this.loginLoading = false
+          }
+        )
+      } else {
+        this.$message.error('请输入完整的账号密码')
+      }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

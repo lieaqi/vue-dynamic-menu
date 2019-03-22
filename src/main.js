@@ -6,12 +6,14 @@ import ElementUI from 'element-ui';
 
 import 'element-ui/lib/theme-chalk/index.css';
 
+
+import request from '@/utils/request'
 //自定义样式
 import './style/index.scss'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, { size: 'mini' });
-
+Vue.prototype.$request = request
 new Vue({
     router,
     store,

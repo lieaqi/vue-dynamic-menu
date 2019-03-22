@@ -3,28 +3,27 @@
   <section>
     <el-button type="primary" @click="openDialog('addOrUpdateMenuDiglog','add')">新增菜单</el-button>
     <div class="dividing-line"></div>
-    <el-tree :data="trees" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false" :check-strictly="true">
+    <el-tree :data="trees" node-key="id" default-expand-all :expand-on-click-node="false" :check-strictly="true" :props="defaultProps">
       <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
+        <span>{{ node.label }} <span class="menu-hidden" v-if="data.IsHidden">隐</span> </span>
         <span>
-          <el-button type="text" size="mini" @click="openDialog('addOrUpdateMenuDiglog','add',node)">
+          <el-button type="text" size="mini" @click="openDialog('addOrUpdateMenuDiglog','AddMenu',node)">
             新增
           </el-button>
-          <el-button type="text" size="mini" @click="openDialog('addOrUpdateMenuDiglog','update',node)">
+          <el-button type="text" size="mini" @click="openDialog('addOrUpdateMenuDiglog','UpdateMenu',node)">
             修改
           </el-button>
-          <el-button type="text" size="mini" @click="() => remove(node, data)">
+          <el-button type="text" size="mini" @click="() => DeleteMenu(data)">
             删除
           </el-button>
         </span>
       </span>
     </el-tree>
-    <addOrUpdateMenu :dialogVisible.sync="addOrUpdateMenuDiglog" :checkType="checkType" :checkNode="checkNode"></addOrUpdateMenu>
+    <addOrUpdateMenu :dialogVisible.sync="addOrUpdateMenuDiglog" v-if="addOrUpdateMenuDiglog" :checkType="checkType" :checkNode="checkNode" @saveClose="GetMenuTree()"></addOrUpdateMenu>
   </section>
 </template>
 
 <script>
-let id = 1000
 import addOrUpdateMenu from './addOrUpdateMenu'
 export default {
   label: '菜单配置',
@@ -42,61 +41,38 @@ export default {
   data() {
     return {
       addOrUpdateMenuDiglog: false,
-      trees: [
-        {
-          id: 1,
-          label: '测试菜单1',
-          children: [
-            {
-              id: 4,
-              label: '测试菜单 1-1'
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '测试菜单 2',
-          children: [
-            {
-              id: 5,
-              label: '测试菜单 2-1'
-            },
-            {
-              id: 6,
-              label: '测试菜单 2-2'
-            }
-          ]
-        }
-      ],
+      trees: [],
       checkNode: {},
-      checkType: null
+      checkType: null,
+      defaultProps: {
+        children: 'ChildList',
+        label: 'Name'
+      }
     }
   },
-  created() {},
+  created() {
+    this.GetMenuTree()
+  },
 
   mounted() {},
 
   methods: {
+    GetMenuTree() {
+      this.$request.Site.GetMenuTree({}).then(res => {
+        this.trees = res.Data
+      })
+    },
     openDialog(dialog, type, node = {}) {
-      this.checkNode = node
+      this.checkNode = node.data
       this.checkType = type
       this[dialog] = true
     },
-    append(data) {
-      this.$confirm()
-      const newChild = { id: id++, label: 'testtest', children: [] }
-      if (!data.children) {
-        this.$set(data, 'children', [])
-      }
-      data.children.push(newChild)
-    },
-
-    remove(node) {
-      this.$confirm(`是否删除菜单 ${node.label}`).then(res => {
-        const parent = node.parent
-        const children = parent.data.children || parent.data
-        const index = children.findIndex(d => d.id === data.id)
-        children.splice(index, 1)
+    DeleteMenu(data) {
+      this.$confirm(`是否删除菜单 ${data.Name}`).then(res => {
+        this.$request.Site.DeleteMenu({ IdList: [data.Id] }).then(res => {
+          this.$message.success('删除成功')
+          this.GetMenuTree()
+        })
       })
     }
   }
