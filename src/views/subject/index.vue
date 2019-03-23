@@ -10,8 +10,17 @@
           <span class="flex-1">
           </span>
           <div class="subject-user">
-            <img src="https://lieaqi.oss-cn-beijing.aliyuncs.com/score/%E6%99%93.jpg" alt="" class="subject-userImg">
-            <span class="subject-userName">落逸</span>
+            <el-dropdown trigger="click" @command="handleCommand">
+              <div class="subject-user">
+                <span class="subject-userName">联欣</span>
+                <img src="https://lieaqi.oss-cn-beijing.aliyuncs.com/score/%E6%99%93.jpg" alt="" class="subject-userImg">
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="menu" v-for="(menu,i) in menus" :key="i">
+                  <i :class="`iconfont ${menu.icon} m-right-5`"></i>{{menu.text}}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-header>
         <el-main>
@@ -28,7 +37,7 @@
 </template>
 <script>
 import leftMenu from './leftMenu.vue'
-
+import { mapActions } from 'vuex'
 export default {
   label: '框架体',
 
@@ -43,13 +52,25 @@ export default {
   props: {},
 
   data() {
-    return {}
+    return {
+      menus: []
+    }
   },
-  created() {},
+  created() {
+    this.menus = [{ type: 'fc', value: 'loginOut', text: '退出', icon: 'icon-tuichu' }]
+  },
 
   mounted() {},
 
-  methods: {}
+  methods: {
+    ...mapActions(['loginOut']),
+    handleCommand(command) {
+      command.type == 'url' ? this.goUrl(command.value) : this[command.value]()
+    },
+    goUrl(url) {
+      this.$router.push(url)
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
