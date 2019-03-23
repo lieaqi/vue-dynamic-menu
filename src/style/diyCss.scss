@@ -83,3 +83,15 @@ input:-webkit-autofill:focus {
 .center {
   text-align: center;
 }
+
+.el-cascader {
+  .el-input {
+    width: 100% !important;
+  }
+}
+
+.el-message-box__input {
+  .el-input {
+    width: 100% !important;
+  }
+}

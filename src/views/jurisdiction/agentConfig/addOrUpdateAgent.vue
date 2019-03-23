@@ -1,11 +1,17 @@
 <template>
   <el-dialog :title="title" :visible.sync="dialog" width="500px" :before-close="close" :close-on-click-modal="false">
-    <el-form :model="agentForm" :rules="agentRules" ref="agentForm" label-width="80px" class="demo-ruleForm">
-      <el-form-item label="电话" prop="TelPhone">
-        <el-input v-model="agentForm.TelPhone"></el-input>
-      </el-form-item>
+    <el-form :model="agentForm" :rules="agentRules" ref="agentForm" label-width="80px" class="demo-ruleForm" v-loading="loading">
       <el-form-item label="名称" prop="Name">
         <el-input v-model="agentForm.Name"></el-input>
+      </el-form-item>
+      <el-form-item label="电话" prop="TelPhone" v-if="!checkId">
+        <el-input v-model="agentForm.TelPhone"></el-input>
+      </el-form-item>
+      <el-form-item label="等级" prop="GradeName">
+        <el-select v-model="agentForm.GradeName" placeholder="请选择">
+          <el-option v-for="item in grades" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="地区" prop="address">
         <el-cascader placeholder="选择地区" :options="options" filterable v-model="agentForm.address" :props="props"></el-cascader>
@@ -42,7 +48,9 @@ export default {
         ProvinceId: '',
         CityId: '',
         CountyId: '',
-        address: null
+        GradeName: '',
+        address: null,
+        Id: ''
       },
       agentRules: {
         Name: [{ required: true, message: '请输入代理商名称', trigger: 'blur' }],
@@ -55,7 +63,9 @@ export default {
         children: 'ChildrenList',
         label: 'Name',
         value: 'Id'
-      }
+      },
+      grades: [],
+      loading: false
     }
   },
 
@@ -64,8 +74,14 @@ export default {
   watch: {},
 
   created() {
+    this.grades = [
+      { label: '金牌', value: 'GoldMedal' },
+      { label: '银牌', value: 'SilverMedal' },
+      { label: '铜牌', value: 'CopperMedal' }
+    ]
     this.GetArea()
     this.title = this.checkId ? '修改代理商' : '新增代理商'
+    this.checkId && this.GetAgentDetail(this.checkId)
   },
 
   mounted() {
@@ -75,6 +91,25 @@ export default {
   destroyed() {},
 
   methods: {
+    GetAgentDetail(Id) {
+      this.loading = true
+      this.$request.Agent.GetAgentDetail({ Id }).then(
+        res => {
+          Object.keys(this.agentForm).forEach(s => {
+            this.agentForm[s] = res.Data[s]
+          })
+          this.agentForm.address = [
+            this.agentForm.ProvinceId,
+            this.agentForm.CityId,
+            this.agentForm.CountyId
+          ]
+          this.loading = false
+        },
+        () => {
+          this.loading = false
+        }
+      )
+    },
     GetArea() {
       this.$request.Agent.GetArea({}).then(res => {
         this.options = res.Data
@@ -87,6 +122,7 @@ export default {
     //保存关闭
     saveClose() {
       this.close()
+      this.$message.success(`${this.title}成功`)
       this.$emit('saveClose')
       this.saveLoading = false
     },
@@ -112,7 +148,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 .el-input,
+.el-select,
 .el-textarea {
   width: 350px;
+}
+.el-cascader {
+  width: 350px;
+  .el-input {
+    width: 100% !important;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
       <el-form-item label="用户名" prop="TelPhone">
         <el-input v-model="roleForm.TelPhone" name="roleTelPhone" auto-complete="new-roleTelPhone"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="PassWord">
+      <el-form-item label="密码" prop="PassWord" v-if="!checkId">
         <el-input v-model="roleForm.PassWord" type="password" auto-complete="new-PassWord"></el-input>
       </el-form-item>
       <el-form-item label="类型" prop="UserType">
@@ -62,6 +62,7 @@ export default {
 
   created() {
     this.title = this.checkId ? '修改角色' : '新增角色'
+    this.checkId && this.GetUserDetail(this.checkId)
   },
 
   mounted() {
@@ -71,6 +72,13 @@ export default {
   destroyed() {},
 
   methods: {
+    GetUserDetail(Id) {
+      this.$request.Site.GetUserDetail({ Id }).then(res => {
+        Object.keys(this.roleForm).forEach(s => {
+          this.roleForm[s] = res.Data[s]
+        })
+      })
+    },
     //关闭
     close() {
       this.$emit('update:dialogVisible', false)

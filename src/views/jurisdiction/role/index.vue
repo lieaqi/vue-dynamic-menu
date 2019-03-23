@@ -7,12 +7,17 @@
     <div class="dividing-line m-bottom-20"></div>
     <div class="c-flex flex-1">
       <div class="flex-1">
-        <el-table :data="roleManagementData" border style="width: 100%" v-loading="loading" highlight-current-row @current-change="handleCurrentChange">
+        <el-table :data="roleManagementData" border style="width: 100%" v-loading="loading" highlight-current-row @current-change="checkRow">
           <el-table-column :label="data.label" :width="data.width" :min-width="data.minWidth" v-for="data in roleManagementTable" :key="data.prop" v-if="data.checked">
             <template slot-scope="scope">
               <el-button type="text" v-if="data.prop=='TelPhone'" @click="openDialog('addOrUpdateRoleDiglog',scope.row.Id)">{{scope.row.TelPhone}}</el-button>
               <span v-else-if="data.prop=='Activate'">{{scope.row[data.prop]?'是':'否'}}</span>
               <span v-else>{{scope.row[data.prop]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100px">
+            <template slot-scope="scope">
+              <el-button type="text" @click="UpdateUserPassWord(scope.row)">修改密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -91,6 +96,16 @@ export default {
   mounted() {},
 
   methods: {
+    UpdateUserPassWord(row) {
+      this.$prompt('请输入新密码', `账号:${row.TelPhone}`, {}).then(({ value }) => {
+        this.$request.Site.UpdateUserPassWord({
+          PassWord: value,
+          Id: row.Id
+        }).then(res => {
+          this.$message.success('修改成功')
+        })
+      })
+    },
     setUserMenu(state, menu) {
       let url = state ? 'AddUserAndMenu' : 'DeleteUserAndMenu'
       let text = state ? '绑定菜单' : '解绑菜单'
@@ -122,7 +137,7 @@ export default {
       this.searchInfo.PageSize = val
       this.GetUser()
     },
-    handleCurrentChange(val) {
+    checkRow(val) {
       console.log(val)
       this.currentRow = val
       this.GetMenuTree()

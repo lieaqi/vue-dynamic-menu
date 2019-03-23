@@ -56,5 +56,9 @@ class Site {
     AddUser(data) {
         return service({ url: "/Site/AddUser", method: 'post', data })
     }
+    //获取用户详情
+    GetUserDetail(data) {
+        return service({ url: "/Site/GetUserDetail", method: 'post', data })
+    }
 }
 export default new Site()
