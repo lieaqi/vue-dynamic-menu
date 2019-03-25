@@ -1,11 +1,11 @@
 
 <template>
   <section>
-    <div class="top-title">
-      <div>后台管理</div>
-      <div class="f-title">CRM</div>
+    <div class="top-title can-click" @click="$router.push('/')">
+      <div>动态菜单</div>
+      <div class="f-title">MENU</div>
     </div>
-    <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
+    <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
       <loopMenu :routes="routes"></loopMenu>
     </el-menu>
   </section>
@@ -28,39 +28,10 @@ export default {
 
   data() {
     return {
-      isCollapse: false,
-      routes: []
+      isCollapse: false
     }
   },
-  created() {
-    this.routes = [
-      {
-        children: [
-          {
-            title: '子菜单',
-            path: '/menu/childMenu',
-            show: true,
-            name: 'menu',
-            icon: '',
-            children: [
-              {
-                title: '子子菜单',
-                path: '/menu/childMenu',
-                show: true,
-                name: 'menu',
-                icon: ''
-              }
-            ]
-          }
-        ],
-        title: '菜单1',
-        path: '/menu',
-        show: false,
-        name: 'menu',
-        icon: 'icon-yiwurenyuan'
-      }
-    ]
-  },
+  created() {},
 
   mounted() {},
 
@@ -77,13 +48,16 @@ export default {
   computed: {
     defaultActive() {
       return this.$route.path
+    },
+    routes: function() {
+      return this.$store.state.routes
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 180px;
+  width: 220px;
   min-height: 400px;
 }
 .el-menu {

@@ -1,7 +1,7 @@
 
 <template  >
   <div>
-    <div :index="route.path" v-for="(route,i) in routes" :key="i" :is="getType(route.children)">
+    <div :index="getIndex()" v-for="(route,i) in routes" :key="getIndex()" :is="getType(route.children)">
       <div v-if="getType(route.children)=='el-menu-item'">
         <div class="c-flex">
           <span class="flex-1" @click.stop="checkMenu(route)">
@@ -33,6 +33,7 @@
 
 <script>
 import loopMenuSet from './loopMenuSet'
+import uuidv4 from 'uuid/v4'
 export default {
   label: '',
 
@@ -56,6 +57,9 @@ export default {
   mounted() {},
 
   methods: {
+    getIndex() {
+      return uuidv4()
+    },
     checkMenu(menu) {
       this.$store.dispatch('setMenuType', 'UPDATEMENU')
       this.$store.dispatch('setMenu', menu)

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import V404 from '@/views/404.vue'
 import menu from './menu'
 import testMenu1 from './testMenu1'
+import testMenu2 from './testMenu2'
 
 Vue.use(Router)
 
@@ -12,8 +13,10 @@ const router = new Router({
         { path: '/404', component: V404, hidden: true, initial: true },
         menu, //权限配置
         testMenu1,
+        testMenu2,
         { path: '**', redirect: { path: '/404' }, hidden: true, initial: true },
-    ]
+    ],
+    mode: 'history',
 })
 
 // const whiteList = ["login"] // 不验证token白名单

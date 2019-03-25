@@ -5,6 +5,8 @@ export default {
     component: subject,
     title: '菜单',
     icon: 'icon-yiwurenyuan',
+    hidden: true,
+    initial: true,
     redirect: {
         path: '/menu/dynamicMenu'
     },
@@ -13,5 +15,6 @@ export default {
         name: 'dynamicMenu',
         component: () => import('@/views/dynamicMenu'),
         title: '动态菜单',
+        initial: true,
     }]
 }

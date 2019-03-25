@@ -2,7 +2,7 @@
 <template>
   <section>
     <el-container>
-      <el-aside width="180px">
+      <el-aside width="220px">
         <leftMenu></leftMenu>
       </el-aside>
       <el-container>
@@ -12,7 +12,7 @@
           <div class="subject-user">
             <el-dropdown trigger="click" @command="handleCommand">
               <div class="subject-user">
-                <span class="subject-userName">联欣</span>
+                <span class="subject-userName">落逸</span>
                 <img src="https://lieaqi.oss-cn-beijing.aliyuncs.com/score/%E6%99%93.jpg" alt="" class="subject-userImg">
               </div>
               <el-dropdown-menu slot="dropdown">
@@ -63,6 +63,9 @@ export default {
   mounted() {},
 
   methods: {
+    doSomething(e) {
+      console.log(e, 1)
+    },
     ...mapActions(['loginOut']),
     handleCommand(command) {
       command.type == 'url' ? this.goUrl(command.value) : this[command.value]()
