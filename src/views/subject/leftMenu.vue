@@ -5,23 +5,14 @@
       <div>后台管理</div>
       <div class="f-title">CRM</div>
     </div>
-    <!-- <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
-      <div :index="`${route.path}/${route.children[0].path}`" v-for="route in routes" :key="route.path" :is="getType(route.children)">
-        <div v-if="getType(route.children)=='el-menu-item'">
-          <i :class="`iconfont ${route.meta.icon}`"></i>
-          <span slot="title">{{route.meta.title}}</span>
-        </div>
-        <template slot="title" v-else>
-          <i class="el-icon-location"></i>
-          <span slot="title">{{route.meta.title}}</span>
-        </template>
-        <el-menu-item :index="`${route.path}/${routeChild.path}`" v-for="(routeChild,i) in route.children" v-if="i>1||(route.children.length!=1)" :key="routeChild.path">{{routeChild.meta.title}}</el-menu-item>
-      </div>
-    </el-menu> -->
+    <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
+      <loopMenu :routes="routes"></loopMenu>
+    </el-menu>
   </section>
 </template>
 
 <script>
+import loopMenu from '@/components/loopMenu.vue'
 export default {
   label: '左侧菜单',
 
@@ -29,7 +20,9 @@ export default {
 
   mixins: [],
 
-  components: {},
+  components: {
+    loopMenu
+  },
 
   props: {},
 
@@ -40,8 +33,33 @@ export default {
     }
   },
   created() {
-    this.routes = this.getRoute(this.$router.options.routes)
-    console.log(this.routes)
+    this.routes = [
+      {
+        children: [
+          {
+            title: '子菜单',
+            path: '/menu/childMenu',
+            show: true,
+            name: 'menu',
+            icon: '',
+            children: [
+              {
+                title: '子子菜单',
+                path: '/menu/childMenu',
+                show: true,
+                name: 'menu',
+                icon: ''
+              }
+            ]
+          }
+        ],
+        title: '菜单1',
+        path: '/menu',
+        show: false,
+        name: 'menu',
+        icon: 'icon-yiwurenyuan'
+      }
+    ]
   },
 
   mounted() {},
@@ -54,13 +72,6 @@ export default {
           r.children = r.children ? this.getRoute(r.children) : null
           return r
         })
-    },
-    getType(children) {
-      if (children.length > 1) {
-        return 'el-submenu'
-      } else {
-        return 'el-menu-item'
-      }
     }
   },
   computed: {
