@@ -13,21 +13,21 @@ export default {
     children: [{
         path: 'commodityList',
         name: 'commodityList',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '商品列表',
         },
     }, {
         path: 'commodityUpdate/:id?',
         name: 'commodityUpdate',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '商品修改',
         },
     }, {
         path: 'commodityAdd',
         name: 'commodityAdd',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '商品新增',
         },

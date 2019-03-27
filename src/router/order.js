@@ -13,21 +13,21 @@ export default {
     children: [{
         path: 'orderList',
         name: 'orderList',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '订单列表',
         },
     }, {
         path: 'orderUpdate/:id?',
         name: 'orderUpdate',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '订单修改',
         },
     }, {
         path: 'orderAdd',
         name: 'orderAdd',
-        component: () => import('@/views/testMenu'),
+        component: () => import('@/views/demoMenu'),
         meta: {
             title: '订单新增',
         },

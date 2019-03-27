@@ -10,6 +10,7 @@ export default [
         "title": "商品列表",
         "name": "commodityList",
         "path": "/commodity/commodityList",
-        "show": true
+        "show": true,
+        "children": null
     }]
 }]

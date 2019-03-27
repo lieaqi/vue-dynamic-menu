@@ -26,12 +26,10 @@ router.beforeEach((to, from, next) => {
 //权限验证
 function authenticationAuthority(to, next) {
     let paths = store.state.allPath;
-    let params = Object.keys(to.params);
-    let pathArr = to.path.split('/');
-    for (let i = 0; i < params.length; i++) {
-        pathArr[pathArr.length - params.length + i] = `:${params[i]}?`
-    }
-    let path = pathArr.join('/');
+    let params = Object.keys(to.params).map(p => `/:${p}?`).join('');
+    let existParamsLength = (Object.keys(to.params).filter(p => to.params[p])).length;
+    let arrPath = to.path.split('/')
+    let path = (arrPath.slice(0, arrPath.length - existParamsLength)).join('/') + params;
     paths.includes(path) ? next() : next({ path: '/404' })
 }
 

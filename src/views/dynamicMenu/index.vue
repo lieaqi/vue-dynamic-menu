@@ -120,7 +120,6 @@ export default {
     }
   },
   created() {
-    console.log(this.$router.options.routes)
     this.allRoutes = this.$router.options.routes.filter(r => !r.meta.initial)
     this.routes = this.getRoute(JSON.parse(JSON.stringify(this.$store.state.routes)))
     this.allRoutes = this.getRoute(this.allRoutes)
@@ -171,7 +170,7 @@ export default {
       setTimeout(() => {
         let newMenu = JSON.parse(JSON.stringify(menu))
         let config = this.getRouteConfig(newMenu, this.allRoutes)
-        let route = JSON.parse(JSON.stringify(config.route))
+        let route = config.route
         Object.keys(this.routeForm).map(r => (this.routeForm[r] = route[r]))
         this.routeForm.path = config.fatherPath + this.routeForm.path
         this.$set(this.routeForm, 'show', true)
@@ -205,6 +204,7 @@ export default {
           this.$message.success('操作成功')
           this.$store.dispatch('saveMenu', this.routeForm)
           this.$store.dispatch('setAllPath', this.allPath)
+          this.initRouteForm()
         } else {
           return false
         }
