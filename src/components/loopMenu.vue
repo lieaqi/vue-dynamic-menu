@@ -8,7 +8,7 @@
       </div>
       <template slot="title" v-else>
         <i class="el-icon-location"></i>
-        <span slot="title">{{route.title}}</span>
+        <span slot="title">{{route.title}} </span>
       </template>
       <loopMenu v-if="route.children" :routes="route.children"></loopMenu>
     </div>

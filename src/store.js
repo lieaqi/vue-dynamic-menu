@@ -11,11 +11,15 @@ export default new Vuex.Store({
     state: {
         menu: null,
         menuType: "FIRSTMENU",
-        routes: routes
+        routes: routes,
+        allPath: ["/commodity", "/commodity/commodityList"]
     },
     mutations: {
         SETMENU(state, menu) {
             state.menu = menu;
+        },
+        SETALLPATH(state, allPath) {
+            state.allPath = allPath;
         },
         SETMENUTYPE(state, type) {
             state.menuType != type && (state.menu = {})
@@ -23,7 +27,7 @@ export default new Vuex.Store({
         },
         UPDATEMENU(state, menu) {
             Object.keys(state.menu).map(r => {
-                state.menu[r] = menu[r] || state.menu[r];
+                state.menu[r] = menu[r] == undefined ? state.menu[r] : menu[r];
             })
         },
         ADDMENU(state, menu) {
@@ -41,6 +45,9 @@ export default new Vuex.Store({
     actions: {
         setMenu({ commit }, menu) {
             commit('SETMENU', menu)
+        },
+        setAllPath({ commit }, allPath) {
+            commit('SETALLPATH', allPath)
         },
         saveMenu({ commit, state }, menu) {
             commit(state.menuType, menu)

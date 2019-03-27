@@ -5,7 +5,7 @@
       <div>动态菜单</div>
       <div class="f-title">MENU</div>
     </div>
-    <el-menu :router="true" :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
+    <el-menu :router="true" :default-active="defaultActive" class="el-menu-vertical-demo" :collapse="isCollapse" active-text-color="#ffffff" background-color="#162850" text-color="#c0c4cc">
       <loopMenu :routes="routes"></loopMenu>
     </el-menu>
   </section>
@@ -38,7 +38,7 @@ export default {
   methods: {
     getRoute(routes) {
       return routes
-        .filter(r => !r.hidden)
+        .filter(r => r.show)
         .map(r => {
           r.children = r.children ? this.getRoute(r.children) : null
           return r
@@ -50,7 +50,7 @@ export default {
       return this.$route.path
     },
     routes: function() {
-      return this.$store.state.routes
+      return this.getRoute(JSON.parse(JSON.stringify(this.$store.state.routes)))
     }
   }
 }

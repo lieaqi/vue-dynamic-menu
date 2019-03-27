@@ -23,7 +23,7 @@
             </el-cascader>
           </div>
 
-          <el-form :model="routeForm" :rules="routeRules" ref="routeForm" label-width="100px" class="demo-ruleForm" :key="new Date().getTime()">
+          <el-form :model="routeForm" :rules="routeRules" ref="routeForm" label-width="100px" class="demo-ruleForm" :key="formNum">
             <el-form-item label="父级菜单" v-if="$store.state.menuType!='UPDATEMENU'">
               <span>{{fatherTitle||'---'}}</span>
             </el-form-item>
@@ -76,8 +76,15 @@ export default {
   props: {},
 
   data() {
+    var checkPath = (rule, value, callback) => {
+      if (this.allPath.includes(value) && this.$store.state.menuType != 'UPDATEMENU') {
+        callback(new Error('路径已经存在'))
+      }
+      callback()
+    }
     return {
       routes: [],
+      formNum: 1,
       routeForm: {
         title: '',
         name: '',
@@ -88,7 +95,10 @@ export default {
       routeRules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
         name: [{ required: true, message: '请选择英文名称', trigger: 'blur' }],
-        path: [{ required: true, message: '请选择路径', trigger: 'blur' }]
+        path: [
+          { required: true, message: '请选择路径', trigger: 'blur' },
+          { validator: checkPath, trigger: 'change' }
+        ]
       },
       allRoutes: [],
       props: {
@@ -103,14 +113,16 @@ export default {
   },
   watch: {
     '$store.state.menu': function(menu) {
+      this.formNum++
       this.initRouteForm()
       let type = this.$store.state.menuType
       this.menuConfig(type, menu)
     }
   },
   created() {
-    this.allRoutes = this.$router.options.routes.filter(r => !r.initial)
-    this.routes = this.getRoute(this._.cloneDeep(this.$store.state.routes))
+    console.log(this.$router.options.routes)
+    this.allRoutes = this.$router.options.routes.filter(r => !r.meta.initial)
+    this.routes = this.getRoute(JSON.parse(JSON.stringify(this.$store.state.routes)))
     this.allRoutes = this.getRoute(this.allRoutes)
     this.addFirstMenu()
   },
@@ -118,11 +130,19 @@ export default {
   mounted() {},
 
   methods: {
+    //同步菜单
     synchronization() {
       this.$store.dispatch('synchronization', this.routes).then(res => {
         this.$message.success('同步成功')
       })
     },
+    //添加初级路由
+    addFirstMenu() {
+      this.$store.dispatch('setMenuType', 'FIRSTMENU')
+      this.$store.dispatch('setMenu', this.routes)
+      this.initRouteForm()
+    },
+    //初始表格
     initRouteForm() {
       this.quickRoute = []
       this.routeForm = {
@@ -133,40 +153,31 @@ export default {
         show: true
       }
     },
-    addFirstMenu() {
-      this.$store.dispatch('setMenuType', 'FIRSTMENU')
-      this.$store.dispatch('setMenu', this.routes)
-      this.initRouteForm()
-    },
+    //菜单配置默认信息
     menuConfig(type, menu) {
       this.menuSetTitle = type == 'UPDATEMENU' ? '修改菜单' : '新增菜单'
       if (type == 'UPDATEMENU') {
         Object.keys(this.routeForm).map(r => {
-          this.routeForm[r] = menu[r] || this.routeForm[r]
+          this.routeForm[r] = menu[r] == undefined ? this.routeForm[r] : menu[r]
         })
       } else {
         this.fatherTitle = type == 'ADDMENU' ? menu.title : '---'
         this.fatherPath = type == 'ADDMENU' ? menu.path : '/'
       }
     },
-    save() {
-      this.$refs.routeForm.validate(state => {
-        if (state) {
-          this.$message.success('操作成功')
-          this.$store.dispatch('saveMenu', this.routeForm)
-        } else {
-          return false
-        }
+    //快速选择路由
+    checkMenu(menu) {
+      this.formNum++
+      setTimeout(() => {
+        let newMenu = JSON.parse(JSON.stringify(menu))
+        let config = this.getRouteConfig(newMenu, this.allRoutes)
+        let route = JSON.parse(JSON.stringify(config.route))
+        Object.keys(this.routeForm).map(r => (this.routeForm[r] = route[r]))
+        this.routeForm.path = config.fatherPath + this.routeForm.path
+        this.$set(this.routeForm, 'show', true)
       })
     },
-    checkMenu(menu) {
-      let newMenu = this._.cloneDeep(menu)
-      let config = this.getRouteConfig(newMenu, this.allRoutes)
-      let route = this._.cloneDeep(config.route)
-      Object.keys(this.routeForm).map(r => (this.routeForm[r] = route[r]))
-      this.routeForm.path = config.fatherPath + this.routeForm.path
-      this.$set(this.routeForm, 'show', true)
-    },
+    //获取快速路由信息
     getRouteConfig(menu, routes, fatherPath = '') {
       let path = menu.splice(0, 1)[0]
       let route = this._.find(routes, { path })
@@ -175,6 +186,7 @@ export default {
         ? this.getRouteConfig(menu, route.children, fatherPath)
         : { route, fatherPath }
     },
+    //获取路由
     getRoute(routes) {
       return routes
         .filter(r => !r.hidden)
@@ -186,6 +198,30 @@ export default {
     },
     getType(children) {
       return children.length ? 'el-submenu' : 'el-menu-item'
+    },
+    save() {
+      this.$refs.routeForm.validate(state => {
+        if (state) {
+          this.$message.success('操作成功')
+          this.$store.dispatch('saveMenu', this.routeForm)
+          this.$store.dispatch('setAllPath', this.allPath)
+        } else {
+          return false
+        }
+      })
+    }
+  },
+  computed: {
+    allPath: function() {
+      let path = []
+      getPaths(this.routes)
+      function getPaths(routes) {
+        routes.forEach(r => {
+          r.path && path.push(r.path)
+          r.children && getPaths(r.children)
+        })
+      }
+      return path
     }
   }
 }

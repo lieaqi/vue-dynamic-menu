@@ -6,7 +6,7 @@
         <div class="c-flex">
           <span class="flex-1" @click.stop="checkMenu(route)">
             <i class="el-icon-location"></i>
-            <span slot="title">{{route.title}}</span>
+            <span slot="title">{{route.title}}<span v-if="!route.show" class="latent">隐</span> </span>
           </span>
           <span class="menu-btn m-right-20">
             <i class="el-icon-plus" @click.stop="addMenu(route)"></i>
@@ -18,7 +18,7 @@
         <div class="c-flex">
           <span class="flex-1" @click.stop="checkMenu(route)">
             <i class="el-icon-location"></i>
-            <span slot="title">{{route.title}}</span>
+            <span slot="title">{{route.title}}<span v-if="!route.show" class="latent">隐</span> </span>
           </span>
           <span class="menu-btn m-right-20">
             <i class="el-icon-plus" @click.stop="addMenu(route)"></i>

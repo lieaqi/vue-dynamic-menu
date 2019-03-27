@@ -2,38 +2,37 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import V404 from '@/views/404.vue'
 import menu from './menu'
-import testMenu1 from './testMenu1'
-import testMenu2 from './testMenu2'
+import commodity from './commodity'
+import order from './order'
+import store from '@/store'
 
 Vue.use(Router)
 
 const router = new Router({
     routes: [
-        { path: '/', redirect: { path: '/menu/dynamicMenu' }, hidden: true, initial: true },
-        { path: '/404', component: V404, hidden: true, initial: true },
+        { path: '/', redirect: { path: '/menu/dynamicMenu' }, hidden: true, meta: { initial: true } },
+        { path: '/404', component: V404, hidden: true, meta: { initial: true } },
         menu, //权限配置
-        testMenu1,
-        testMenu2,
-        { path: '**', redirect: { path: '/404' }, hidden: true, initial: true },
+        commodity,
+        order,
+        { path: '**', redirect: { path: '/404' }, hidden: true, meta: { initial: true } },
     ],
     mode: 'history',
 })
 
-// const whiteList = ["login"] // 不验证token白名单
-
 router.beforeEach((to, from, next) => {
-    console.log(to)
-    next()
-    //  getToken() ? tokenToUrl(to, next) : noTokenToUrl(to, next);
+    to.meta.initial ? next() : authenticationAuthority(to, next);
 })
-// //有token 
-// async function tokenToUrl(to, next) {
-//     !store.state.user.userInfo && (await store.dispatch('getUserInfo'))
-//     next()
-// }
-// //无token
-// function noTokenToUrl(to, next) {
-//     whiteList.includes(to.name) ? next() : next('/login')
-// }
+//权限验证
+function authenticationAuthority(to, next) {
+    let paths = store.state.allPath;
+    let params = Object.keys(to.params);
+    let pathArr = to.path.split('/');
+    for (let i = 0; i < params.length; i++) {
+        pathArr[pathArr.length - params.length + i] = `:${params[i]}?`
+    }
+    let path = pathArr.join('/');
+    paths.includes(path) ? next() : next({ path: '/404' })
+}
 
 export default router
